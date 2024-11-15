@@ -176,7 +176,11 @@ func (c *Client) decodeError(resp *http.Response) error {
 	}
 	err = json.NewDecoder(buf).Decode(&e)
 	if err != nil {
-		return fmt.Errorf("spotify: couldn't decode error: (%d) [%s]", len(responseBody), responseBody)
+		fmt.Println("content-type", resp.Header.Get("Content-Type"))
+		e.E = Error{
+			Message: string(responseBody),
+			Status:  resp.StatusCode,
+		}
 	}
 
 	if e.E.Message == "" {
